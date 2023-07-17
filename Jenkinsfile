@@ -6,10 +6,6 @@ pipeline {
         DOCKERHUB_TOKEN = credentials('dockerhub_token')
     }
 
-    options {
-      ansiColor('xterm')
-    }
-
     stages {
         stage('Clone Git Repository') {
             steps {
