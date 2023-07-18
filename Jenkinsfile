@@ -33,16 +33,18 @@ pipeline {
                 then
                     echo "final python container is running!"
                     echo "Checking application is up..."
-                    res=$(curl -I "http://localhost:5000/api/doc" | awk '/^HTTP/{print $2}')
+                    res=$(curl -I "http://host.docker.internal:5000/api/doc" | awk '/^HTTP/{print $2}')
                     if [ $res == '200' ]
                     then
                         echo "Good job! Flask app is running.."
                     else
                         echo "ERROR - Flask app is not working. Please check the logs"
+                        docker rm -f $CONTAINER_NAME
                         exit 1
                     fi
                 else
                     echo "ERROR - container state is: " $CONTAINER_STATUS
+                    docker rm -f $CONTAINER_NAME
                     exit 1
                 fi 
                '''
