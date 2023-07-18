@@ -47,6 +47,7 @@ pipeline {
                     docker rm -f $CONTAINER_NAME
                     exit 1
                 fi 
+                docker rm -f $CONTAINER_NAME
                '''
             }
         }
