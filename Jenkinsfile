@@ -26,7 +26,7 @@ pipeline {
             steps {
                 sh '''
                 CONTAINER_NAME="finalpython"
-                docker run -p 5000:5000 -d --name $CONTAINER_NAME --network=host shiranglasser10/final-python:${BUILD_NUMBER}
+                docker run --network=project-network -p 5000:5000 -d --name $CONTAINER_NAME shiranglasser10/final-python:${BUILD_NUMBER}
                 sleep 5
                 CONTAINER_STATUS=$(docker container inspect -f '{{.State.Status}}' $CONTAINER_NAME)
                 if [ $CONTAINER_STATUS = "running" ]
