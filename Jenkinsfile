@@ -22,19 +22,30 @@ pipeline {
             }
         }
 
-        stage('Test Flask app is working') {
+        stage('Test Flask app is up & running') {
             steps {
                 sh '''
-                docker run -p 5000:5000 -d shiranglasser10/final-python:${BUILD_NUMBER}
-                res=$(curl -I “http://localhost:5000/api/doc” | awk ‘/^HTTP/{print $2}’)
-                if [ $res == '200' ]
+                CONTAINER_NAME="finalpython"
+                docker run -p 5000:5000 -d --name $CONTAINER_NAME shiranglasser10/final-python:${BUILD_NUMBER}
+                sleep 5
+                CONTAINER_STATUS=$(docker container inspect -f '{{.State.Status}}' $CONTAINER_NAME)
+                if [ "$CONTAINER_STATUS = "running" ];
                 then
-                    echo "Good job! Flask app is running.."
+                    echo "final python container is running!"
+                    echo "Checking application is up..."
+                    res=$(curl -I "http://localhost:5000/api/doc" | awk '/^HTTP/{print $2}')
+                    if [ $res == '200' ]
+                    then
+                        echo "Good job! Flask app is running.."
+                    else
+                        echo "ERROR - Flask app is not working. Please check the logs"
+                        exit 1
+                    fi
                 else
-                    echo "ERROR - Flask app is not working. Please check the logs"
+                    echo "ERROR - container state is: " $CONTAINER_STATUS
                     exit 1
-                fi
-                '''
+                fi 
+               '''
             }
         }
 
