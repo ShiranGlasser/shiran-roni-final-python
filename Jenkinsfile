@@ -34,7 +34,7 @@ pipeline {
                     echo "final python container is running!"
                     echo "Checking application is up..."
                     res=$(curl -I "http://host.docker.internal:5000/api/doc" | awk '/^HTTP/{print $2}')
-                    if [ $res == '200' ]
+                    if [ "$res" = "200" ]
                     then
                         echo "Good job! Flask app is running.."
                     else
